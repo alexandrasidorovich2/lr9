@@ -1,6 +1,10 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <algorithm>
+#include <sstream>
+#include <Windows.h>
+
 
 using namespace std;
 
@@ -10,6 +14,9 @@ struct Product {
     double price;
     int quantity;
 };
+
+
+
 
 void selectionSort(std::vector<Product>& products) {
     for (int i = 0; i < products.size() - 1; i++) {
@@ -76,18 +83,33 @@ void mergeSort(std::vector<Product>& products, int left, int right) {
 
 
 int main()
-{
-    cout << "Laboratory work #9. GIT\n";
+{   
+    setlocale(LC_ALL, "ru_RU.UTF-8");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    cout << "Laboratory work #9. GIT";
     cout << "Variant #10. Каталог товаров\n";
     cout << "Author: Сидорович Александра\n";
 
-    std::vector<Product> products = {
-   {"Товар1", "Категория2", 150.0, 5},
-   {"Товар2", "Категория1", 120.0, 3},
-   {"Товар3", "Промтовары", 90.0, 8},
-   {"Товар4", "Категория1", 110.0, 2},
-   {"Товар5", "Промтовары", 130.0, 4}
-};
+    std::vector<Product> products;
+
+    std::ifstream file("data.txt");
+    if (file.is_open()) {
+        std::string line;
+        while (std::getline(file, line)) {
+            std::istringstream iss(line);
+            Product product;
+            iss >> product.price >> product.quantity >> product.category >> product.name;
+            products.push_back(product);
+        }
+        file.close();
+    }
+    else {
+        std::cerr << "Unable to open file data.txt" << std::endl;
+        return 1;
+    }
+
 
 std::cout << "Товары стоимостью больше 100 рублей:" << std::endl;
 for (const auto& product : products) {
